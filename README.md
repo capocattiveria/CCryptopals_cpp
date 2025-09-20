@@ -1,10 +1,15 @@
 ## Cryptopals solutions
 
-For the resolutions of the challenge, I introduced the **CCrypto library**.
 
-This CCrypto is inside the lib folder, I used this occasion
-to learn more about Makefile.
+This repo contains solutions to the [Cryptopals](https://cryptopals.com/) crypto challenges in C++.
 
-You can **make** it better.
+## Requirements
+
+* g++
+* make
+
+## Build
+
+To build, navigate to the repo root directory, and run `make`.
 
 
