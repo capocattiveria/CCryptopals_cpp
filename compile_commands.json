@@ -1,0 +1,53 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-Wall",
+      "-Wextra",
+      "-Iinclude",
+      "-Ilib/CCrypto/include",
+      "-c",
+      "-o",
+      "build/Challenges/main.o",
+      "Challenges/main.cpp"
+    ],
+    "directory": "/home/nico/project/cryptopals",
+    "file": "/home/nico/project/cryptopals/Challenges/main.cpp",
+    "output": "/home/nico/project/cryptopals/build/Challenges/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-Wall",
+      "-Wextra",
+      "-Iinclude",
+      "-Ilib/CCrypto/include",
+      "-c",
+      "-o",
+      "build/Challenges/s01c01.o",
+      "Challenges/s01c01.cpp"
+    ],
+    "directory": "/home/nico/project/cryptopals",
+    "file": "/home/nico/project/cryptopals/Challenges/s01c01.cpp",
+    "output": "/home/nico/project/cryptopals/build/Challenges/s01c01.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Wall",
+      "-Wextra",
+      "-std=c++17",
+      "-O2",
+      "-c",
+      "-Iinclude",
+      "-o",
+      "build/StringConverter.o",
+      "src/StringConverter.cpp"
+    ],
+    "directory": "/home/nico/project/cryptopals/lib/CCrypto",
+    "file": "/home/nico/project/cryptopals/lib/CCrypto/src/StringConverter.cpp",
+    "output": "/home/nico/project/cryptopals/lib/CCrypto/build/StringConverter.o"
+  }
+]

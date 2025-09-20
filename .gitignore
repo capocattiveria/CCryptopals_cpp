@@ -1,0 +1,8 @@
+# build of challenges
+build/
+bin/
+
+# build of CCrypto
+lib/CCrypto/build
+lib/CCrypto/lib
+
