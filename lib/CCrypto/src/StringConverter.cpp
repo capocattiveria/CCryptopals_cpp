@@ -54,7 +54,7 @@ std::string StringConverter::bytes2Base64(const std::vector<unsigned char> bytes
             value |= bytes[i+1] << 8;	
         else
             padding ++;
-        
+
         // Check if second bytes exists.
         if( i + 2 < bytes.size() )
             value |= bytes[i+2];
