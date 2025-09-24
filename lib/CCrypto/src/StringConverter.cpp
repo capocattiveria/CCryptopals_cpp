@@ -1,4 +1,7 @@
 #include <stdexcept>
+#include <sstream>
+#include <iomanip>
+
 #include "StringConverter.h"
 
 namespace CCrypto {
@@ -78,6 +81,16 @@ std::string StringConverter::hex2base64(const std::string& hexString)
     std::vector<unsigned char> bytes = hex2Bytes(hexString);
     return bytes2Base64(bytes);
 }
+
+std::string StringConverter::vectorToHexString(const std::vector<unsigned char>& bytes) {
+    std::ostringstream ss;
+    for (unsigned char byte : bytes) {
+        // ss << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(byte);
+        ss << std::hex << std::setw(2) << static_cast<int>(byte);
+    }
+    return ss.str();
+}
+
 
 
 };

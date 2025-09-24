@@ -35,6 +35,9 @@ namespace CCrypto {
 	// Convert hex string to base64
 	static std::string hex2base64(const std::string& hexString);
 
+	// Convert the vector of bytes to HexString representation
+	static std::string vectorToHexString(const std::vector<unsigned char>& bytes);
+
 	
     };
 
