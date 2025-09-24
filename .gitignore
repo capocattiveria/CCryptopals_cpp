@@ -6,5 +6,5 @@ bin/
 lib/CCrypto/build
 lib/CCrypto/lib
 
-.cache/
+.cache/*
 
