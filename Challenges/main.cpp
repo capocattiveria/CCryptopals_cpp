@@ -1,18 +1,53 @@
 #include <iostream>
-#include "s01c01.h"
-#include "s01c02.h"
+#include <vector>
+// #include <memory>
 
+#include "Utils.h"
 
-int main(int argc, char** argv) {
+#include "StringConverter.h"
 
-  //std::cout<< "Hello friend" << std::endl;
+// Include condizionali
+#if SET == 1
+    #include "set1/S01C01.h"
+    #include "set1/S01C02.h"
+    #include "set1/S01C03.h"
+#elif SET == 2
+    #include "set2/c01.hpp"
+#endif
 
-  // Hex to base64
-  // s01c01();
-
-  // Fixed xor
-  s01c02();
-
-
-  return 0;
+#if SET==1
+int main() {
+    #if CHALLENGE == 1
+        s01c01();
+        //challenge::set1::c01();
+    #elif CHALLENGE == 2
+        s01c02();
+    #elif CHALLENGE == 3
+        s01c03();
+    #else
+        std::cerr << "Challenge not defined\n";
+        return 1;
+    #endif
+    
+    return 0;
 }
+#endif
+
+
+#if SET==2
+int main() {
+    #if SET == 1 && CHALLENGE == 1
+        s01c01();
+        //challenge::set1::c01();
+    #elif SET == 1 && CHALLENGE == 2
+        challenge::set1::c02();
+    #elif SET == 2 && CHALLENGE == 1
+        challenge::set2::c01();
+    #else
+        std::cerr << "Challenge not defined\n";
+        return 1;
+    #endif
+    
+    return 0;
+}
+#endif

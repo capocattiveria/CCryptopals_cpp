@@ -1,4 +1,4 @@
-## Cryptopals solutions
+#Cryptopals solutions
 
 
 This repo contains solutions to the [Cryptopals](https://cryptopals.com/) crypto challenges in C++.

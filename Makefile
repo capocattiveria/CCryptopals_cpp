@@ -1,67 +1,96 @@
-EXE_NAME   := CCryptopalSolution
-BIN_DIR    := bin
-BUILD_DIR  := build
-LIB_DIR    := lib/CCrypto
-LIBNAME    := libCCrypto.a
+BUILD ?= debug
+SET ?= 1
+CHALLENGE ?= 1
 
-# Directory dove cercare i file sorgente
-SRC_DIRS   := Challenges
+CHALLENGE_DIR := Challenges
+BIN_DIR := bin
+INCLUDE_DIR := CCrypto/src
+CXX := g++
 
-# Trova automaticamente tutti i .cpp nelle directory specificate
-SOURCES    := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
-OBJECTS    := $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+ifeq ($(BUILD),debug)
+    LIB := CCrypto/lib/debug/libCCrypto.a
+    BIN_OUT := $(BIN_DIR)/debug
+    CXXFLAGS := -g -O0 -Wall -std=c++17
+    BUILD_DEF := -DDEBUG
+else
+    LIB := CCrypto/lib/release/libCCrypto.a
+    BIN_OUT := $(BIN_DIR)/release
+    CXXFLAGS := -O2 -Wall -std=c++17
+    BUILD_DEF := -DNDEBUG
+endif
 
-# Compiler options and flags
-CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra
-DEBUGFLAGS = -g -DDEBUG
-INCLUDE_DIR = -Iinclude -Ilib/CCrypto/include
+MAIN_SRC := $(CHALLENGE_DIR)/main.cpp
 
-# Default target
-all: $(BIN_DIR)/$(EXE_NAME)
+#Naming the executable following the set and challenge compiled
+TARGET := $(BIN_OUT)/cryptopalsS$(SET)C$(CHALLENGE) 
 
-# ------------------------- Create the necessary directory -------------------------
-$(BIN_DIR):
-	@mkdir -p $(BIN_DIR)
+# Get the sources under the Set directory
+CHALLENGE_SOURCES := $(wildcard $(CHALLENGE_DIR)/set$(SET)/*.cpp)
 
-$(BUILD_DIR)/%/:
+.PHONY: all debug release clean list compile_commands run
+
+all: $(LIB) $(TARGET)
+
+run: all
+	@$(TARGET)
+
+compile_commands:
+	@bear -- $(MAKE) clean all
+
+debug:
+	@$(MAKE) BUILD=debug
+
+release:
+	@$(MAKE) BUILD=release
+
+$(LIB):
+	@$(MAKE) -C CCrypto BUILD=$(BUILD)
+
+$(BIN_OUT):
 	@mkdir -p $@
 
+$(TARGET): $(MAIN_SRC) $(CHALLENGE_SOURCES) $(LIB) | $(BIN_OUT)
+	@echo "Building $@ (SET=$(SET) CHALLENGE=$(CHALLENGE))"
+	@$(CXX) $(CXXFLAGS) $(BUILD_DEF) -DSET=$(SET) -DCHALLENGE=$(CHALLENGE) \
+		$(MAIN_SRC) $(CHALLENGE_SOURCES) -o $@ \
+		-I$(INCLUDE_DIR) -I$(CHALLENGE_DIR) $(LIB)
 
-# Build of the library
-$(LIB_DIR)/$(LIBNAME):
-	@echo " [MAKE] Building the CCrypto lib"
-	@$(MAKE) -C $(LIB_DIR)
-
-# Link dell'eseguibile
-$(BIN_DIR)/$(EXE_NAME): $(OBJECTS) $(LIB_DIR)/$(LIBNAME) | $(BIN_DIR)
-	@echo " [MKDIR] Creation bin directory"
-	@echo " [LINK] $@"
-	@$(CXX) $(CXXFLAGS) -o $@ $(OBJECTS) -L$(LIB_DIR)/lib -lCCrypto
-
-# Pattern rule per compilare tutti i .cpp nelle directory specificate
-$(BUILD_DIR)/%.o: %.cpp
-	@echo " [CXX] $< -> $@"
-	@mkdir -p $(dir $@)
-	@$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) -c $< -o $@
-
-# Cleaning target
 clean:
-	@$(MAKE) -C $(LIB_DIR) clean
-	@echo " [CLEAN APP]"
-	@rm -rf $(BUILD_DIR) $(BIN_DIR)
+	@rm -rf $(BIN_DIR)
 
-# Debug target
-debug: CXXFLAGS += $(DEBUGFLAGS)
-debug: $(BIN_DIR)/$(EXE_NAME)
+list:
+	@echo "Available sets:"
+	@find $(CHALLENGE_DIR) -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort
 
-# Target per vedere i valori delle variabili (debug del Makefile)
-show-vars:
-	@echo "SRC_DIRS: $(SRC_DIRS)"
-	@echo "SOURCES: $(SOURCES)"
-	@echo "OBJECTS: $(OBJECTS)"
-	@echo "EXE_NAME: $(EXE_NAME)"
+help:
+	@echo "Cryptopals Challenge Build System"
+	@echo ""
+	@echo "Usage:"
+	@echo "  make [target] [SET=n] [CHALLENGE=n] [BUILD=debug|release]"
+	@echo ""
+	@echo "Targets:"
+	@echo "  all              Build challenge (default: SET=1 CHALLENGE=1 BUILD=debug)"
+	@echo "  run              Build and execute challenge"
+	@echo "  debug            Build in debug mode"
+	@echo "  release          Build in release mode"
+	@echo "  compile_commands Generate compile_commands.json with bear"
+	@echo "  clean            Remove all build artifacts"
+	@echo "  list             List available challenge sets"
+	@echo "  help             Show this help message"
+	@echo ""
+	@echo "Variables:"
+	@echo "  SET=n            Challenge set number (default: 1)"
+	@echo "  CHALLENGE=n      Challenge number (default: 1)"
+	@echo "  BUILD=type       Build type: debug or release (default: debug)"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make                           # Build set1, challenge1 (debug)"
+	@echo "  make SET=2 CHALLENGE=3         # Build set2, challenge3 (debug)"
+	@echo "  make run SET=1 CHALLENGE=5     # Build and run set1, challenge5"
+	@echo "  make release SET=3 CHALLENGE=1 # Build set3, challenge1 (release)"
+	@echo "  make clean                     # Clean all builds"
+	@echo ""
+	@echo "Output:"
+	@echo "  Debug:   $(BIN_DIR)/debug/cryptopalsS<SET>C<CHALLENGE>"
+	@echo "  Release: $(BIN_DIR)/release/cryptopalsS<SET>C<CHALLENGE>"
 
-
-
-.PHONY: all clean debug show-vars

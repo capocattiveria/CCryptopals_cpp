@@ -2,52 +2,85 @@
   {
     "arguments": [
       "/usr/bin/g++",
-      "-std=c++17",
-      "-Wall",
-      "-Wextra",
-      "-Iinclude",
-      "-Ilib/CCrypto/include",
       "-c",
+      "-g",
+      "-O0",
+      "-Wall",
+      "-std=c++17",
+      "-DSET=1",
+      "-DCHALLENGE=1",
+      "-ICCrypto/src",
+      "-IChallenges",
+      "CCrypto/lib/debug/libCCrypto.a",
       "-o",
-      "build/Challenges/main.o",
+      "bin/debug/cryptopals",
       "Challenges/main.cpp"
     ],
     "directory": "/home/nico/project/cryptopals",
     "file": "/home/nico/project/cryptopals/Challenges/main.cpp",
-    "output": "/home/nico/project/cryptopals/build/Challenges/main.o"
+    "output": "/home/nico/project/cryptopals/bin/debug/cryptopals"
   },
   {
     "arguments": [
       "/usr/bin/g++",
-      "-std=c++17",
-      "-Wall",
-      "-Wextra",
-      "-Iinclude",
-      "-Ilib/CCrypto/include",
       "-c",
+      "-g",
+      "-O0",
+      "-Wall",
+      "-std=c++17",
+      "-DSET=1",
+      "-DCHALLENGE=1",
+      "-ICCrypto/src",
+      "-IChallenges",
+      "CCrypto/lib/debug/libCCrypto.a",
       "-o",
-      "build/Challenges/s01c01.o",
-      "Challenges/s01c01.cpp"
+      "bin/debug/cryptopals",
+      "Challenges/set1/S01C01.cpp"
     ],
     "directory": "/home/nico/project/cryptopals",
-    "file": "/home/nico/project/cryptopals/Challenges/s01c01.cpp",
-    "output": "/home/nico/project/cryptopals/build/Challenges/s01c01.o"
+    "file": "/home/nico/project/cryptopals/Challenges/set1/S01C01.cpp",
+    "output": "/home/nico/project/cryptopals/bin/debug/cryptopals"
   },
   {
     "arguments": [
       "/usr/bin/g++",
-      "-Wall",
-      "-Wextra",
-      "-std=c++17",
-      "-O2",
       "-c",
-      "-Iinclude",
+      "-g",
+      "-O0",
+      "-Wall",
+      "-std=c++17",
+      "-DSET=1",
+      "-DCHALLENGE=1",
+      "-ICCrypto/src",
+      "-IChallenges",
+      "CCrypto/lib/debug/libCCrypto.a",
       "-o",
-      "build/StringConverter.o",
-      "src/StringConverter.cpp"
+      "bin/debug/cryptopals",
+      "Challenges/set1/S01C02.cpp"
     ],
-    "directory": "/home/nico/project/cryptopals/lib/CCrypto",
-    "file": "/home/nico/project/cryptopals/lib/CCrypto/src/StringConverter.cpp",
-    "output": "/home/nico/project/cryptopals/lib/CCrypto/build/StringConverter.o"
+    "directory": "/home/nico/project/cryptopals",
+    "file": "/home/nico/project/cryptopals/Challenges/set1/S01C02.cpp",
+    "output": "/home/nico/project/cryptopals/bin/debug/cryptopals"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-g",
+      "-O0",
+      "-Wall",
+      "-std=c++17",
+      "-DSET=1",
+      "-DCHALLENGE=1",
+      "-ICCrypto/src",
+      "-IChallenges",
+      "CCrypto/lib/debug/libCCrypto.a",
+      "-o",
+      "bin/debug/cryptopals",
+      "Challenges/set1/S01C03.cpp"
+    ],
+    "directory": "/home/nico/project/cryptopals",
+    "file": "/home/nico/project/cryptopals/Challenges/set1/S01C03.cpp",
+    "output": "/home/nico/project/cryptopals/bin/debug/cryptopals"
   }
 ]
