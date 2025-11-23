@@ -17,9 +17,7 @@ Character frequency is a good metric.
 Evaluate each output and choose the one with the best score.
 */
 
-/**
-*/
-void s01c03(std::string str);
+void s01c03();
 
 
 #endif //S01C03_H

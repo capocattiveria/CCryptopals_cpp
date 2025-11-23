@@ -1,6 +1,7 @@
 BUILD ?= debug
+
 SET ?= 1
-CHALLENGE ?= 1
+CHALLENGE ?= 3
 
 CHALLENGE_DIR := Challenges
 BIN_DIR := bin
@@ -27,15 +28,9 @@ TARGET := $(BIN_OUT)/cryptopalsS$(SET)C$(CHALLENGE)
 # Get the sources under the Set directory
 CHALLENGE_SOURCES := $(wildcard $(CHALLENGE_DIR)/set$(SET)/*.cpp)
 
-.PHONY: all debug release clean list compile_commands run
+.PHONY: all debug release clean list compile_commands run refresh_lsp clean-all $(LIB)
 
 all: $(LIB) $(TARGET)
-
-run: all
-	@$(TARGET)
-
-compile_commands:
-	@bear -- $(MAKE) clean all
 
 debug:
 	@$(MAKE) BUILD=debug
@@ -44,19 +39,25 @@ release:
 	@$(MAKE) BUILD=release
 
 $(LIB):
+	@echo "Make lib"
 	@$(MAKE) -C CCrypto BUILD=$(BUILD)
 
 $(BIN_OUT):
 	@mkdir -p $@
 
-$(TARGET): $(MAIN_SRC) $(CHALLENGE_SOURCES) $(LIB) | $(BIN_OUT)
+$(TARGET): $(MAIN_SRC) $(CHALLENGE_SOURCES) $(LIB) refresh_lsp | $(BIN_OUT)
 	@echo "Building $@ (SET=$(SET) CHALLENGE=$(CHALLENGE))"
 	@$(CXX) $(CXXFLAGS) $(BUILD_DEF) -DSET=$(SET) -DCHALLENGE=$(CHALLENGE) \
 		$(MAIN_SRC) $(CHALLENGE_SOURCES) -o $@ \
 		-I$(INCLUDE_DIR) -I$(CHALLENGE_DIR) $(LIB)
 
 clean:
+	@$(MAKE) -C CCrypto clean
 	@rm -rf $(BIN_DIR)
+
+clean-all:
+	@$(MAKE) -C CCrypto clean-all
+	@rm -rf build bin 
 
 list:
 	@echo "Available sets:"
@@ -70,13 +71,13 @@ help:
 	@echo ""
 	@echo "Targets:"
 	@echo "  all              Build challenge (default: SET=1 CHALLENGE=1 BUILD=debug)"
-	@echo "  run              Build and execute challenge"
 	@echo "  debug            Build in debug mode"
 	@echo "  release          Build in release mode"
 	@echo "  compile_commands Generate compile_commands.json with bear"
 	@echo "  clean            Remove all build artifacts"
 	@echo "  list             List available challenge sets"
 	@echo "  help             Show this help message"
+	@echo "  clean-all	  Clean all the builds"
 	@echo ""
 	@echo "Variables:"
 	@echo "  SET=n            Challenge set number (default: 1)"
@@ -93,4 +94,16 @@ help:
 	@echo "Output:"
 	@echo "  Debug:   $(BIN_DIR)/debug/cryptopalsS<SET>C<CHALLENGE>"
 	@echo "  Release: $(BIN_DIR)/release/cryptopalsS<SET>C<CHALLENGE>"
+
+
+compile_commands:
+	@bear -- $(MAKE) clean all
+
+refresh_lsp:
+	@rm compile_commands.json
+	@echo "Refreshing LSP compile commands for SET=$(SET) CHALLENGE=$(CHALLENGE)..."
+	@bear --append -- $(CXX) $(CXXFLAGS) $(BUILD_DEF) -DSET=$(SET) -DCHALLENGE=$(CHALLENGE) \
+		$(MAIN_SRC) $(CHALLENGE_SOURCES) -fsyntax-only \
+		-I$(INCLUDE_DIR) -I$(CHALLENGE_DIR)
+
 

@@ -25,18 +25,20 @@ else
 endif
 
 # File sorgenti
-SOURCES := StringConverter.cpp Utils.cpp
+SOURCES := StringConverter.cpp Utils.cpp xor.cpp
 SRC_FILES := $(addprefix $(SRC_DIR)/, $(SOURCES))
 OBJECTS := $(addprefix $(BUILD_DIR)/, $(SOURCES:.cpp=.o))
 
-# Target predefinito
+# Library target
+LIB_TARGET := $(LIB_OUT)/$(LIBNAME)
+
+# Default target
 .DEFAULT_GOAL := all
 
 # Phony targets
 .PHONY: all debug release clean clean-all help
 
-# Build corrente
-all: $(LIB_OUT)/$(LIBNAME)
+all: $(LIB_TARGET)
 	@echo " [ OK ] $(BUILD) build completata: $(LIB_OUT)/$(LIBNAME)"
 
 # Explicit build
@@ -59,7 +61,7 @@ both: clean-all
 	@echo "        Release: $(LIB_DIR)/release/$(LIBNAME)"
 
 # Creating static library
-$(LIB_OUT)/$(LIBNAME): $(OBJECTS) | $(LIB_OUT)
+$(LIB_TARGET): $(OBJECTS) | $(LIB_OUT)
 	@echo " [ AR  ] $(BUILD): $@"
 	@ar rcs $@ $^
 
@@ -71,7 +73,7 @@ $(LIB_OUT):
 # Compiling object
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
 	@echo " [ CXX ] $(BUILD): $< -> $@"
-	@$(CXX) $(CXXFLAGS) -c $< -o $@ -I$(INCLUDE_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -I$(INCLUDE_DIR)
 
 # Creazione directory build
 $(BUILD_DIR):
