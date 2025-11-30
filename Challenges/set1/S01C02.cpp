@@ -4,6 +4,7 @@
 #include "StringConverter.h"
 #include <iostream>
 
+using namespace CCrypto;
 
 void s01c02(){
 
@@ -15,8 +16,8 @@ void s01c02(){
     throw std::invalid_argument("Left and right string have different sizes");
 
   // Getting the bytes array from hex
-  std::vector<unsigned char> leftBytes  = CCrypto::hex2Bytes(leftString);
-  std::vector<unsigned char> rightBytes = CCrypto::hex2Bytes(rightString);
+  std::vector<unsigned char> leftBytes  = StringConverter::hex2Bytes(leftString);
+  std::vector<unsigned char> rightBytes = StringConverter::hex2Bytes(rightString);
 
   std::vector<unsigned char> resultsBytes; 
 
@@ -32,7 +33,7 @@ void s01c02(){
 
   std::cout << "result: " << result << std::endl;
 
-  std::cout << "result in Hex: " << CCrypto::vectorToHexString(resultsBytes) << std::endl;
+  std::cout << "result in Hex: " << StringConverter::vectorToHexString(resultsBytes) << std::endl;
 
 }
 

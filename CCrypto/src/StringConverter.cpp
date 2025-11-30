@@ -5,7 +5,7 @@
 
 #include "StringConverter.h"
 
-namespace CCrypto {
+namespace CCrypto::StringConverter {
 
 
         // Definizione base64
@@ -99,6 +99,10 @@ namespace CCrypto {
                 ss << std::hex << std::setw(2) << static_cast<int>(byte);
             }
             return ss.str();
+        }
+
+        std::string bytesToString(const std::vector<unsigned char>& bytes) {
+            return std::string(bytes.begin(), bytes.end());
         }
 
 }

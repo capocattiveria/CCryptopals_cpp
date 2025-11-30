@@ -5,7 +5,7 @@
 #include <string>
 
 
-namespace CCrypto {
+namespace CCrypto::StringConverter {
 
 
     // Return a hex char 2 int
@@ -22,6 +22,9 @@ namespace CCrypto {
 
     // Convert the vector of bytes to HexString representation
     std::string vectorToHexString(const std::vector<unsigned char>& bytes);
+
+    // Convert the vector of bytes in String
+    std::string bytesToString(const std::vector<unsigned char>& bytes);
 
 
 }

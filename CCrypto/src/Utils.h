@@ -14,10 +14,12 @@ namespace CCrypto {
     namespace Utils{
 
         // From the string passed, compute the frequency map
-        std::vector<double> loadFrequencyCharFromText(const std::string& fileName);
+        std::vector<double> getFrequencyCharInVector(const std::string& fileName);
         std::string loadTextFromFile(const std::string& fileName);
 
+        double englishScore(const std::string& text, const std::vector<double>& frequencyVector );
 
+        
 
 
     }

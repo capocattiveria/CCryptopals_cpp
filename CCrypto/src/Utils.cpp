@@ -3,62 +3,103 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <vector>
 
-namespace CCrypto{
+namespace CCrypto::Utils{
 
-namespace Utils{
 
-    std::string loadTextFromFile(const std::string& fileName) {
-        std::cout << "loadTextFromFile";
-        std::ifstream file(fileName);
+/*======================== CCrypto::Utils ============================*/
 
-        if(!file.is_open()){
-            return "";
+std::string loadTextFromFile(const std::string& fileName) {
+
+    std::ifstream file(fileName);
+
+    if(!file.is_open()){
+        return "";
+    }
+ 
+    if (!file) {
+        throw std::runtime_error("Impossible to open file: " + fileName);
+    }
+
+    std::stringstream buffer;
+
+    buffer << file.rdbuf();  // read entire file
+    return buffer.str();
+}
+
+
+// From the string passed, compute the frequency map
+std::vector<double> getFrequencyCharInVector(const std::string& fileName){
+
+    // 65 A
+    // 97 a 
+
+    //std::cout << "loadFrequencyCharFromText" << std::endl;
+
+    std::string text = loadTextFromFile(fileName);
+
+    std::vector<double> frequencyVector(256,0);
+
+    // Computing the frequency without normalization
+    for(unsigned char c: text){
+        if( c >= 65 && c <= 90 ){ // Uppercase [A-Z]
+            // Adding the frequency both to [A-Z] and [a-z]
+            frequencyVector[c] += 1;
+            frequencyVector[c + 32] += 1;
+        } 
+        else if(c >= 97 && c <= 122 ){ // Lowercase [a-z]
+            // Adding the frequency both to [a-z] and [a-z]
+            frequencyVector[c] += 1;
+            frequencyVector[c - 32] += 1;
         }
-     
-        if (!file) {
-            throw std::runtime_error("Impossible to open file: " + fileName);
-        }
-
-        std::stringstream buffer;
-
-        buffer << file.rdbuf();  // read entire file
-        return buffer.str();
+        else
+            frequencyVector[c] += 1;
     }
 
 
-    // From the string passed, compute the frequency map
-    std::vector<double> loadFrequencyCharFromText(const std::string& fileName){
-
-        std::cout << "loadFrequencyCharFromText" << std::endl;
-
-        std::string text = loadTextFromFile(fileName);
-
-        std::vector<double> freqVector(256,0);
-
-        // Computing the frequency without normalization
-        for(unsigned char c: text){
-            freqVector[c] += 1;
+    int textLen = text.length();
+    //std::cout << "--- Relative Frequencies ---\n";
+    for(int i = 0; i < 256; i++){
+        
+        // Only calculate and print if the character count is non-zero AND printable
+        if(frequencyVector[i] > 0 && std::isprint(static_cast<char>(i))){
+            // Normalization: count / total_length
+            frequencyVector[i] = frequencyVector[i] / textLen;
+            std::cout << static_cast<char>(i) << ": " << frequencyVector[i] << std::endl;
         }
 
-
-        // normalize the only printable character
-        int textLen = text.length();
-        for(int i = 0; i < 256; i++){
-            if(std::isprint(static_cast<char>(i))){
-                freqVector[i] = freqVector[i] / textLen;
-                std::cout << static_cast<char>(i) << ": ";
-                std::cout << freqVector[i] << std::endl;
-            }
-        }
-
-        return freqVector; // RVO return, no copy or move costructor
     }
 
-
-
+    return frequencyVector; // RVO return, no copy or move costructor
 }
 
+
+
+/**
+* @brief This function return a score for the text passes as first parameter,
+* based on the freqVector passed as second parameter.
+* The freqVector can be computed through the getFrequencyCharFromText.
+* This vector contain a weight for each ascii character.
+* The i-th element of the vector must be the i-th char in the Ascii table.
+*/
+double englishScore(const std::string& text, const std::vector<double>& frequencyVector ){
+
+
+    double score = 0.0;
+    int textLength = text.size();
+
+    if(textLength == 0 ) return score;
+
+    for (uint16_t c : text) {
+        if (std::isprint(c)) {
+            score += frequencyVector[c];
+        }
+    }
+
+    return score / textLength;
+
 }
+}// End namespace CCrypto::Utils
 
 
