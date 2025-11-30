@@ -69,8 +69,9 @@ void s01c03(){
 
   uint8_t resultByte = fixedXorFromBytesString(baseTest, resultString);
 
-  std::cout << "Best result text: " << resultString << std::endl;
-  std::cout << "Xored with: " << std::hex << resultByte << " -> " << resultByte <<  std::endl;
+  std::cout << "Best result text: " << resultString << '\n'
+          << "XOR key: 0x" << std::hex << static_cast<int>(resultByte) << std::dec
+          << " (" << static_cast<int>(resultByte) << ")\n";
 
   return;
 

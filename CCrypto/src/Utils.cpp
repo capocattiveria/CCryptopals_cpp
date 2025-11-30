@@ -5,10 +5,11 @@
 #include <iostream>
 #include <vector>
 
-namespace CCrypto::Utils{
+namespace CCrypto::Utils{ 
 
 
-/*======================== CCrypto::Utils ============================*/
+/**==============================================================================================**/
+
 
 std::string loadTextFromFile(const std::string& fileName) {
 
@@ -29,7 +30,8 @@ std::string loadTextFromFile(const std::string& fileName) {
 }
 
 
-// From the string passed, compute the frequency map
+/**==============================================================================================**/
+
 std::vector<double> getFrequencyCharInVector(const std::string& fileName){
 
     std::string text = loadTextFromFile(fileName);
@@ -54,14 +56,12 @@ std::vector<double> getFrequencyCharInVector(const std::string& fileName){
 
 
     int textLen = text.length();
-    //std::cout << "--- Relative Frequencies ---\n";
     for(int i = 0; i < 256; i++){
         
         // Only calculate and print if the character count is non-zero AND printable
         if(frequencyVector[i] > 0 && std::isprint(static_cast<char>(i))){
-            // Normalization: count / total_length
+            // Normalization
             frequencyVector[i] = frequencyVector[i] / textLen;
-            std::cout << static_cast<char>(i) << ": " << frequencyVector[i] << std::endl;
         }
 
     }
@@ -71,13 +71,8 @@ std::vector<double> getFrequencyCharInVector(const std::string& fileName){
 
 
 
-/**
-* @brief This function return a score for the text passes as first parameter,
-* based on the freqVector passed as second parameter.
-* The freqVector can be computed through the getFrequencyCharFromText.
-* This vector contain a weight for each ascii character.
-* The i-th element of the vector must be the i-th char in the Ascii table.
-*/
+/**==============================================================================================**/
+
 double englishScore(const std::string& text, const std::vector<double>& frequencyVector ){
 
 
