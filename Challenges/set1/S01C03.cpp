@@ -23,7 +23,7 @@ const std::string baseTest = "1b37373331363f78151b7f2b783431333d78397828372d363c
  * @param resultString The output string that will contain the most likely
  *                     English plaintext.
  */
-uint8_t fixedXorFromBytesString(const std::string& bytesString, std::string& resultString) {
+uint8_t fixedXorFromBytesString(const std::string& bytesString, std::string& resultString, double& bestScore ) {
   
   // getting frequency char
   std::vector<double> freqVector = Utils::getFrequencyCharInVector("./assets/englishSample.txt");
@@ -34,7 +34,7 @@ uint8_t fixedXorFromBytesString(const std::string& bytesString, std::string& res
 
   // Init the results
   uint8_t bestChar = 0x00;
-  double bestScore = -5000000;
+  bestScore = -5000000;
 
   for(uint16_t i = 0; i < 256; i++ ){
 
@@ -67,11 +67,12 @@ void s01c03(){
 
   std::string resultString;
 
-  uint8_t resultByte = fixedXorFromBytesString(baseTest, resultString);
+  double score = 0;
+  uint8_t resultByte = fixedXorFromBytesString(baseTest, resultString, score);
 
   std::cout << "Best result text: " << resultString << '\n'
           << "XOR key: 0x" << std::hex << static_cast<int>(resultByte) << std::dec
-          << " (" << static_cast<int>(resultByte) << ")\n";
+          << " (" << static_cast<int>(resultByte) << "-> " << static_cast<char>(resultByte) << ")\n";
 
   return;
 

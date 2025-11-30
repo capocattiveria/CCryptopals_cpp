@@ -11,6 +11,7 @@
     #include "set1/S01C01.h"
     #include "set1/S01C02.h"
     #include "set1/S01C03.h"
+    #include "set1/S01C04.h"
 #elif SET == 2
     #include "set2/c01.hpp"
 #endif
@@ -25,7 +26,7 @@ int main() {
     #elif CHALLENGE == 3
         s01c03();
     #elif CHALLENGE == 4
-
+        s01c04();
     #else
         std::cerr << "Challenge not defined\n";
         return 1;
