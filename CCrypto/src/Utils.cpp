@@ -32,11 +32,6 @@ std::string loadTextFromFile(const std::string& fileName) {
 // From the string passed, compute the frequency map
 std::vector<double> getFrequencyCharInVector(const std::string& fileName){
 
-    // 65 A
-    // 97 a 
-
-    //std::cout << "loadFrequencyCharFromText" << std::endl;
-
     std::string text = loadTextFromFile(fileName);
 
     std::vector<double> frequencyVector(256,0);
@@ -91,15 +86,15 @@ double englishScore(const std::string& text, const std::vector<double>& frequenc
 
     if(textLength == 0 ) return score;
 
-    for (uint16_t c : text) {
-        if (std::isprint(c)) {
+    for ( uint16_t c : text) {
+        if (c < 255 && std::isprint(c)) {
             score += frequencyVector[c];
         }
     }
 
     return score / textLength;
-
 }
+
 }// End namespace CCrypto::Utils
 
 

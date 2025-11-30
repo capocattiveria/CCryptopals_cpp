@@ -13,17 +13,26 @@ using namespace CCrypto;
 
 const std::string baseTest = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
 
-
-void s01c03(){
-
+/**
+ * @brief This function takes two parameters.
+ *
+ * @param bytesString  The hex string to analyze. The function attempts to
+ *                     recover the original English text by XOR-ing it with
+ *                     all possible characters and evaluating the results.
+ *
+ * @param resultString The output string that will contain the most likely
+ *                     English plaintext.
+ */
+uint8_t fixedXorFromBytesString(const std::string& bytesString, std::string& resultString) {
+  
   // getting frequency char
-  std::vector<double> freqVector = Utils::getFrequencyCharInVector("./CCrypto/assets/englishSample.txt");
+  std::vector<double> freqVector = Utils::getFrequencyCharInVector("./assets/englishSample.txt");
 
   // convert baseTest in string
-  std::vector<uint8_t> text = StringConverter::hex2Bytes(baseTest);
+  std::vector<uint8_t> text = StringConverter::hex2Bytes(bytesString);
 
-  //std::cout << "text: " << text << std::endl;
 
+  // Init the results
   uint8_t bestChar = 0x00;
   double bestScore = -5000000;
 
@@ -46,10 +55,23 @@ void s01c03(){
   }
 
   // std::cout << "Best bytes: " << bestChar << std::endl;
-  std::cout << "Best result: " << StringConverter::bytesToString(Xor::fixedXor(text, bestChar)) << std::endl;
-  std::cout << "Best score: " << bestScore << std::endl;
+  resultString = StringConverter::bytesToString(Xor::fixedXor(text, bestChar));
+
+  return (uint8_t)bestChar;
+
+}
+
+
+/** Function that execute the base test of Cryptopals **/
+void s01c03(){
+
+  std::string resultString;
+
+  uint8_t resultByte = fixedXorFromBytesString(baseTest, resultString);
+
+  std::cout << "Best result text: " << resultString << std::endl;
+  std::cout << "Xored with: " << std::hex << resultByte << " -> " << resultByte <<  std::endl;
 
   return;
 
 }
-

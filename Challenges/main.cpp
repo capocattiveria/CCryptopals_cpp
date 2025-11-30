@@ -24,6 +24,8 @@ int main() {
         s01c02();
     #elif CHALLENGE == 3
         s01c03();
+    #elif CHALLENGE == 4
+
     #else
         std::cerr << "Challenge not defined\n";
         return 1;
