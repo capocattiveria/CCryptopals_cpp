@@ -12,6 +12,7 @@
     #include "set1/S01C02.h"
     #include "set1/S01C03.h"
     #include "set1/S01C04.h"
+    #include "set1/S01C05.h"
 #elif SET == 2
     #include "set2/c01.hpp"
 #endif
@@ -27,6 +28,8 @@ int main() {
         s01c03();
     #elif CHALLENGE == 4
         s01c04();
+    #elif CHALLENGE == 5
+        s01c05();
     #else
         std::cerr << "Challenge not defined\n";
         return 1;
