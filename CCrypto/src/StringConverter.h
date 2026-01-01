@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <cstdint>
 
 
 namespace CCrypto::StringConverter {
@@ -26,6 +27,8 @@ namespace CCrypto::StringConverter {
     // Convert the vector of bytes in String
     std::string bytesToString(const std::vector<unsigned char>& bytes);
 
+    // Convert a string in vector of bytes
+    std::vector<uint8_t> stringToBytes(const std::string& str);
 
 }
 

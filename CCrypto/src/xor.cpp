@@ -28,10 +28,30 @@ std::vector<uint8_t> fixedXor(const std::vector<uint8_t>& bytes, uint8_t byte2Xo
         result.push_back( bytes[i] ^ byte2Xor );
     }
 
-    //std::cout << "charXored: " << StringConverter::bytesToString(result)<< std::endl;
-
     return result;
 
+}
+
+
+std::vector<uint8_t> repeatingKeyXor(const std::vector<uint8_t>& bytes, const std::string& string2Xor ){
+
+    std::vector<uint8_t> result;
+
+    int length = string2Xor.length();
+
+    // Init mod to cycle throgh the string2Xor
+    int mod = 0;
+
+    for( auto& byte: bytes ){
+        result.push_back(byte ^ (uint8_t)string2Xor[mod]);
+
+        // reset the counter when mod go over the string2Xor
+        mod++;
+        if(mod > length)
+            mod=0;
+    }
+    
+    return result;
 }
 
 }

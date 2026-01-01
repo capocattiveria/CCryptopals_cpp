@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <iomanip>
+#include <cstdint>
 
 #include "StringConverter.h"
 
@@ -103,6 +104,10 @@ namespace CCrypto::StringConverter {
 
         std::string bytesToString(const std::vector<unsigned char>& bytes) {
             return std::string(bytes.begin(), bytes.end());
+        }
+
+        std::vector<uint8_t> stringToBytes(const std::string& str){
+            return std::vector<uint8_t>(str.begin(),str.end());
         }
 
 }

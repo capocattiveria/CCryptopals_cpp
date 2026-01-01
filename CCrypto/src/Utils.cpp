@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <format>
 
 namespace CCrypto::Utils{ 
 
@@ -88,6 +89,20 @@ double englishScore(const std::string& text, const std::vector<double>& frequenc
     }
 
     return score / textLength;
+}
+
+/**==============================================================================================**/
+
+void hexDump(const std::vector<uint8_t>& bytes){
+
+
+    for (size_t i = 0; i < bytes.size(); ++i) {
+        if (i % 16 == 0) 
+            std::cout << std::format("\n{:04x}: ", i);
+
+        std::cout << std::format("{:02x} ", bytes[i]);
+    }
+    std::cout << std::endl;
 }
 
 }// End namespace CCrypto::Utils

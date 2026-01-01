@@ -49,6 +49,16 @@ namespace CCrypto::Utils {
          */
         double englishScore(const std::string& text, const std::vector<double>& frequencyVector );
 
+
+
+        /**
+        * @brief Hex dump of a vector of bytes
+        */
+        void hexDump(const std::vector<uint8_t>& bytes );
+
+
+
+
 }
 
 
