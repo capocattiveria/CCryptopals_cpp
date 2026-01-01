@@ -11,12 +11,12 @@ CXX := g++
 ifeq ($(BUILD),debug)
     LIB := CCrypto/lib/debug/libCCrypto.a
     BIN_OUT := $(BIN_DIR)/debug
-    CXXFLAGS := -g -O0 -Wall -std=c++17
+    CXXFLAGS := -g -O0 -Wall -std=c++23
     BUILD_DEF := -DDEBUG
 else
     LIB := CCrypto/lib/release/libCCrypto.a
     BIN_OUT := $(BIN_DIR)/release
-    CXXFLAGS := -O2 -Wall -std=c++17
+    CXXFLAGS := -O2 -Wall -std=c++23
     BUILD_DEF := -DNDEBUG
 endif
 

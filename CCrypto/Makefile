@@ -17,11 +17,11 @@ CXX := g++
 ifeq ($(BUILD),debug)
     BUILD_DIR := build/debug
     LIB_OUT   := $(LIB_DIR)/debug
-    CXXFLAGS  := -g -O0 -DDEBUG -Wall -Wextra -std=c++17
+    CXXFLAGS  := -g -O0 -DDEBUG -Wall -Wextra -std=c++23
 else
     BUILD_DIR := build/release
     LIB_OUT   := $(LIB_DIR)/release
-    CXXFLAGS  := -O2 -DNDEBUG -Wall -Wextra -std=c++17
+    CXXFLAGS  := -O2 -DNDEBUG -Wall -Wextra -std=c++23
 endif
 
 # File sorgenti
