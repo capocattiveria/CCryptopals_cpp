@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include <bit>
 #include <cctype>
 #include <fstream>
 #include <sstream>
@@ -104,6 +105,41 @@ void hexDump(const std::vector<uint8_t>& bytes){
     }
     std::cout << std::endl;
 }
+
+
+/**==============================================================================================**/
+int popcount(uint8_t byte) {
+
+    int count = 0;
+
+    while(byte > 0){
+
+        if( byte & 1 ) count++;
+
+        // Note: Shifting introduce a zero on the most significant bit,
+        // because the byte is unsigned int.
+        // It would have been different if was a signed int.
+        byte>>=1;
+    }
+
+    return count;
+}
+
+
+/**==============================================================================================**/
+int hammingDist(const std::vector<uint8_t>& b0, const std::vector<uint8_t>& b1){
+
+    // edge case
+    if(b0.size() != b1.size()) return -1;
+
+    int count =0;
+    for(int i = 0; i < b0.size(); i++ ){
+        count += popcount(b0[i] ^ b1[i]);
+    }
+    return count;
+
+}
+
 
 }// End namespace CCrypto::Utils
 

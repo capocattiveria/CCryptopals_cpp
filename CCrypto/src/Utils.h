@@ -56,7 +56,16 @@ namespace CCrypto::Utils {
         */
         void hexDump(const std::vector<uint8_t>& bytes );
 
+        /*
+        * @brief Count the popolution of bit in a byte
+        */
+        int popcount(uint8_t byte);
 
+        /**
+         * @brief Hamming distance
+         * @return the hamming distance, return -1 if the function got an error
+        */
+        int hammingDist(const std::vector<uint8_t>& b0, const std::vector<uint8_t>& b1);
 
 
 }
