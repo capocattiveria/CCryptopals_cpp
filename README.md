@@ -8,6 +8,9 @@ This repo contains solutions to the [Cryptopals](https://cryptopals.com/) crypto
 * g++
 * make
 
+### Optional requirements
+* bear ( to generate compile_command.json ) 
+
 ## Build
 
 To build, navigate to the repo root directory, and run `make`.
