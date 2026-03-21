@@ -10,7 +10,7 @@ std::string fixedXor2Char(const std::string& text, char char2Xor){
     std::string result;
 
     // for every char we xor against charToXor
-    for(int i = 0; i < text.length(); i++){
+    for(size_t i = 0; i < text.length(); i++){
         result += text[i] ^ char2Xor;
     }
 

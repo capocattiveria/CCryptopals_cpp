@@ -8,7 +8,7 @@ std::string myHexString = "49276d206b696c6c696e6720796f757220627261696e206c696b6
 
 int s01c01() {
 
-  std::string base64String = StringConverter::hexToBase64(myHexString);
+  std::string base64String = StringConverter::hexToBase64Encode(myHexString);
 
   std::cout<< "My hexString is: \n" << myHexString << std::endl;
 

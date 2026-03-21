@@ -1,3 +1,4 @@
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <sstream>
@@ -82,7 +83,7 @@ std::vector<unsigned char> hexStringToBytes(const std::string& hexString)
 /**==============================================================================================**/
 
 //encoding in basa64
-std::string bytesToBase64(const std::vector<unsigned char>& bytes)
+std::string bytesToBase64Encode(const std::vector<unsigned char>& bytes)
 {
     std::string encodedString;
 
@@ -119,48 +120,62 @@ std::string bytesToBase64(const std::vector<unsigned char>& bytes)
 }
 
 /**==============================================================================================**/
-
-std::string hexToBase64(const std::string& hexString)
+std::string hexToBase64Encode(const std::string& hexString)
 {
     std::vector<unsigned char> bytes = hexStringToBytes(hexString);
-    return bytesToBase64(bytes);
+    return bytesToBase64Encode(bytes);
 }
 
 /**==============================================================================================**/
-std::string base64ToBytes(const std::string& base64String){
+/**
+ * @brief Decodes a Base64-encoded string to raw bytes.
+ * 
+ * Converts Base64 ASCII representation back to binary data.
+ * Processes 4 Base64 characters (24 bits) into 3 output bytes.
+ * 
+ * @param base64String Base64-encoded input (may contain newlines)
+ * @return Decoded binary data as string
+ * 
+ * @example
+ * @code
+ * std::string data = base64Decode("SGVsbG8="); // Returns "Hello"
+ * @endcode
+ */
+std::string base64Decode(const std::string &base64String) 
+{
 
     std::string out;
-
-    // Getting 4 bytes in each cycle
-    int val = 0;
-    int valb = -8; //manage the offset
-    for (unsigned char c : base64String){
-
-        //edge case
-        if (b64_lookup[c] == -1) {
-            if (c == '=') break;
-            // Skip invalid char
-            continue;
-        }
-
-        // We accumulate 6 bits at a time
-        val = (val << 6) + b64_lookup[c];
-
-        valb += 6;
-
-        if(valb >= 0){
-            out.push_back(static_cast<unsigned char>((val >> valb) & 0xFF));
-            valb = -8;
-        }
-
+    
+    for(size_t i = 0; i + 3 < base64String.size(); i += 4) {
+        // Salta padding e newline
+        if (base64String[i] == '=' || base64String[i] == '\n') 
+            break;
         
+        // Converti da ASCII a valore Base64
+        uint8_t c1 = b64_lookup[static_cast<uint8_t>(base64String[i])];
+        uint8_t c2 = b64_lookup[static_cast<uint8_t>(base64String[i+1])];
+        uint8_t c3 = b64_lookup[static_cast<uint8_t>(base64String[i+2])];
+        uint8_t c4 = b64_lookup[static_cast<uint8_t>(base64String[i+3])];
+        
+        // Skip se caratteri invalidi
+        if (c1 == 0xFF || c2 == 0xFF) continue;
+        
+        // Decodifica 4→3 bytes
+        uint8_t v1 = (c1 << 2) | (c2 >> 4);
+        uint8_t v2 = (c2 << 4) | (c3 >> 2);
+        uint8_t v3 = (c3 << 6) | c4;
+        
+        out.push_back(v1);
+        
+        // Gestisci padding
+        if (base64String[i+2] != '=') 
+            out.push_back(v2);
+        if (base64String[i+3] != '=') 
+            out.push_back(v3);
+    }
+    
 
-}
-
-
-return out;
-
-
+  return out;
 }
 
 /**==============================================================================================**/
@@ -168,8 +183,7 @@ return out;
 std::string vectorToHexString(const std::vector<unsigned char>& bytes) {
     std::ostringstream ss;
     for (unsigned char byte : bytes) {
-        // ss << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(byte);
-        ss << std::hex << std::setw(2) << static_cast<int>(byte);
+        ss << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(byte);
     }
     return ss.str();
 }
@@ -185,6 +199,8 @@ std::string bytesToString(const std::vector<unsigned char>& bytes) {
 std::vector<uint8_t> stringToBytes(const std::string& str){
     return std::vector<uint8_t>(str.begin(),str.end());
 }
+
+
 
 }
 

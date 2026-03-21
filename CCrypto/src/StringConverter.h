@@ -16,13 +16,15 @@ namespace CCrypto::StringConverter {
     std::vector<unsigned char> hexStringToBytes(const std::string& hexString);
 
     /** Convert vector of bytes to base64**/
-    std::string bytesToBase64(const std::vector<unsigned char>& bytes);
+    std::string bytesToBase64Encode(const std::vector<unsigned char>& bytes);
+    // base64Encode
+
 
     // Convert hex string to base64
-    std::string hexToBase64(const std::string& hexString);
+    std::string hexToBase64Encode(const std::string& hexString);
 
     // Convert base64 to bytes
-    std::string base64ToBytes(const std::string& base64String);
+    std::string base64Decode(const std::string& base64String);
 
     // Convert the vector of bytes to HexString representation
     std::string vectorToHexString(const std::vector<unsigned char>& bytes);

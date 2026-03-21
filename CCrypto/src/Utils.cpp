@@ -76,7 +76,6 @@ std::vector<double> getFrequencyCharInVector(const std::string& fileName){
 
 double englishScore(const std::string& text, const std::vector<double>& frequencyVector ){
 
-
     double score = 0.0;
     int textLength = text.size();
 
@@ -94,7 +93,6 @@ double englishScore(const std::string& text, const std::vector<double>& frequenc
 /**==============================================================================================**/
 
 void hexDump(const std::vector<uint8_t>& bytes){
-
 
     for (size_t i = 0; i < bytes.size(); ++i) {
         if (i % 16 == 0) 
@@ -131,8 +129,8 @@ int hammingDist(const std::vector<uint8_t>& b0, const std::vector<uint8_t>& b1){
     // edge case
     if(b0.size() != b1.size()) return -1;
 
-    int count =0;
-    for(int i = 0; i < b0.size(); i++ ){
+    int count = 0;
+    for(size_t i = 0; i < b0.size(); i++ ){
         count += popcount(b0[i] ^ b1[i]);
     }
     return count;
