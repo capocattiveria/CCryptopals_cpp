@@ -1,7 +1,7 @@
 BUILD ?= debug
 
 SET ?= 1
-CHALLENGE ?= 5
+CHALLENGE ?= 6
 
 CHALLENGE_DIR := Challenges
 BIN_DIR := bin
@@ -96,14 +96,14 @@ help:
 	@echo "  Release: $(BIN_DIR)/release/cryptopalsS<SET>C<CHALLENGE>"
 
 
-compile_commands:
+compile_commands: refresh_lsp
 	@bear -- $(MAKE) clean all
 
 refresh_lsp:
 	@rm compile_commands.json
 	@echo "Refreshing LSP compile commands for SET=$(SET) CHALLENGE=$(CHALLENGE)..."
 	@bear --append -- $(CXX) $(CXXFLAGS) $(BUILD_DEF) -DSET=$(SET) -DCHALLENGE=$(CHALLENGE) \
-		$(MAIN_SRC) $(CHALLENGE_SOURCES) -fsyntax-only \
+		$(MAIN_SRC) $(CHALLENGE_SOURCES)  CCrypto/src/*.cpp -fsyntax-only \
 		-I$(INCLUDE_DIR) -I$(CHALLENGE_DIR)
 
 

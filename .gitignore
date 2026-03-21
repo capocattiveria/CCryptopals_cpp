@@ -3,11 +3,10 @@ build/
 bin/
 
 # build of CCrypto
-lib/CCrypto/build
-lib/CCrypto/lib
+CCrypto/build
+CCrypto/lib/
 
 .cache/*
 
 compile_commands.json
-
 

@@ -4,6 +4,7 @@
 
 namespace CCrypto::Xor {
 
+/**==============================================================================================**/
 std::string fixedXor2Char(const std::string& text, char char2Xor){
 
     std::string result;
@@ -19,6 +20,8 @@ std::string fixedXor2Char(const std::string& text, char char2Xor){
 
 }
 
+/**==============================================================================================**/
+
 std::vector<uint8_t> fixedXor(const std::vector<uint8_t>& bytes, uint8_t byte2Xor){
 
     std::vector<uint8_t> result;
@@ -32,6 +35,7 @@ std::vector<uint8_t> fixedXor(const std::vector<uint8_t>& bytes, uint8_t byte2Xo
 
 }
 
+/**==============================================================================================**/
 
 std::vector<uint8_t> repeatingKeyXor(const std::vector<uint8_t>& bytes, const std::string& string2Xor ){
 
