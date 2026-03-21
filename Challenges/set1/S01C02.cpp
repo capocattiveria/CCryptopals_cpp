@@ -16,8 +16,8 @@ void s01c02(){
     throw std::invalid_argument("Left and right string have different sizes");
 
   // Getting the bytes array from hex
-  std::vector<unsigned char> leftBytes  = StringConverter::hex2Bytes(leftString);
-  std::vector<unsigned char> rightBytes = StringConverter::hex2Bytes(rightString);
+  std::vector<unsigned char> leftBytes  = StringConverter::hexStringToBytes(leftString);
+  std::vector<unsigned char> rightBytes = StringConverter::hexStringToBytes(rightString);
 
   std::vector<unsigned char> resultsBytes; 
 

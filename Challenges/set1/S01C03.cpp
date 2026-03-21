@@ -29,7 +29,7 @@ uint8_t fixedXorFromBytesString(const std::string& bytesString, std::string& res
   std::vector<double> freqVector = Utils::getFrequencyCharInVector("./assets/englishSample.txt");
 
   // convert baseTest in string
-  std::vector<uint8_t> text = StringConverter::hex2Bytes(bytesString);
+  std::vector<uint8_t> text = StringConverter::hexStringToBytes(bytesString);
 
 
   // Init the results
