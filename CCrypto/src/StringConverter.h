@@ -19,7 +19,6 @@ namespace CCrypto::StringConverter {
     std::string bytesToBase64Encode(const std::vector<unsigned char>& bytes);
     // base64Encode
 
-
     // Convert hex string to base64
     std::string hexToBase64Encode(const std::string& hexString);
 

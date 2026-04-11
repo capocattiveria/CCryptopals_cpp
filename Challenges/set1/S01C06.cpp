@@ -100,16 +100,6 @@ void s01c06(){
 	std::cout << "Best key size: " << choosedKey << std::endl;
 
 	// 5. break the ciphertext into blocks of KEYSIZE length
-	// std::vector<std::vector<uint8_t>> blocksVector;
-	// for(size_t i = 0; i < encodedString.size(); i += choosedKey)
-	// {
-	// 	size_t blockSize = std::min(choosedKey, (int)(encodedString.size() - i));
-	//
-	// 	std::string str = encodedString.substr(i, choosedKey);
-	// 	blocksVector.push_back( std::vector<uint8_t>(str.begin(), str.end()));
-	// }
-
-	// 5. break the ciphertext into blocks of KEYSIZE length
 	// 6. Now transpose the blocks: make a block that is the first byte of every block,
 	// and a block that is the second byte of every block, and so on
 	std::vector<std::vector<uint8_t>> transposedBlock(choosedKey);
