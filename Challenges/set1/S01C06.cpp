@@ -1,10 +1,12 @@
 #include "S01C06.h"
+#include "S01C03.h"
 
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 
 //CCrypto header
+#include "xor.h"
 #include "Utils.h"
 #include "StringConverter.h"
 
@@ -29,7 +31,7 @@ std::string readFile(){
 	// Iterating trough the lines of the file
 	std::string line;
 	while(std::getline(file, line)){
-	base64String += line;
+		base64String += line;
 	}
 
 	return base64String;
@@ -85,10 +87,9 @@ int findKeySize(const std::string& encodedString) {
 void s01c06(){
 
     // Step 1, the hamming distance must be 37
-    std::cout << "Hamming distance: "
-	<< Utils::hammingDist(StringConverter::stringToBytes(s1),
-	StringConverter::stringToBytes(s2))
-	<< std::endl;
+    std::cout << "Hamming distance: " << Utils::hammingDist(StringConverter::stringToBytes(s1),
+											StringConverter::stringToBytes(s2))
+									  << std::endl;
 
 	// Put the file input into a string
 	std::string base64string = readFile();
@@ -96,21 +97,47 @@ void s01c06(){
 	std::string encodedString = StringConverter::base64Decode(base64string);
 	int choosedKey = findKeySize(encodedString);
 
-	std::cout << "Best key size: " << choosedKey;
+	std::cout << "Best key size: " << choosedKey << std::endl;
 
 	// 5. break the ciphertext into blocks of KEYSIZE length
-	std::vector<std::vector<uint8_t>> blocksVector;
-	for(size_t i = 0; i < encodedString.size(); i += choosedKey)
-	{
-		size_t blockSize = std::min(choosedKey, (int)(encodedString.size() - i));
+	// std::vector<std::vector<uint8_t>> blocksVector;
+	// for(size_t i = 0; i < encodedString.size(); i += choosedKey)
+	// {
+	// 	size_t blockSize = std::min(choosedKey, (int)(encodedString.size() - i));
+	//
+	// 	std::string str = encodedString.substr(i, choosedKey);
+	// 	blocksVector.push_back( std::vector<uint8_t>(str.begin(), str.end()));
+	// }
 
-		std::string str = encodedString.substr(i, choosedKey);
-		blocksVector.push_back( std::vector<uint8_t>(str.begin(), str.end()));
-	}
-
-	// 6. Now transpose the blocks: make a block that is the first byte of every block, and a block that is the second byte of every block, and so on
+	// 5. break the ciphertext into blocks of KEYSIZE length
+	// 6. Now transpose the blocks: make a block that is the first byte of every block,
+	// and a block that is the second byte of every block, and so on
 	std::vector<std::vector<uint8_t>> transposedBlock(choosedKey);
 	
+	for(size_t i = 0; i < encodedString.size(); i++)
+	{
+		int mod = i % choosedKey;
+		transposedBlock[mod].push_back(encodedString[i]);
+	}
+
+	std::string key = "";
+
+	for(size_t i = 0; i < choosedKey; i++)
+	{
+		std::string resultString;
+		key += Utils::getFixedXorFromBytes(transposedBlock[i], resultString);
+	}
+
+	std::cout << key << std::endl;
+
+	std::vector<unsigned char> cryptedBytes = StringConverter::stringToBytes(encodedString);
+
+  	std::vector<uint8_t> decryptedBytes = Xor::repeatingKeyXor(cryptedBytes, key);
+
+	std::cout << StringConverter::bytesToString(decryptedBytes) << std::endl;
+	// std::cout << decryptedBytes << std::endl;
+
+
 
 	return;
 }

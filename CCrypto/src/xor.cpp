@@ -51,12 +51,13 @@ std::vector<uint8_t> repeatingKeyXor(const std::vector<uint8_t>& bytes, const st
 
         // reset the counter when mod go over the string2Xor
         mod++;
-        if(mod > length)
+        if(mod >= length)
             mod=0;
     }
     
     return result;
 }
+
 
 }
 

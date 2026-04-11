@@ -7,13 +7,14 @@
 #include "StringConverter.h"
 
 // Include condizionali
+
 #if SET == 1
-    #include "set1/S01C01.h"
-    #include "set1/S01C02.h"
-    #include "set1/S01C03.h"
-    #include "set1/S01C04.h"
-    #include "set1/S01C05.h"
-    #include "set1/S01C06.h"
+#include "set1/S01C01.h"
+#include "set1/S01C02.h"
+#include "set1/S01C03.h"
+#include "set1/S01C04.h"
+#include "set1/S01C05.h"
+#include "set1/S01C06.h"
 #elif SET == 2
     #include "set2/c01.hpp"
 #endif

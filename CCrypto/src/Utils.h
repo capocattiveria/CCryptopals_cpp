@@ -26,6 +26,49 @@ namespace CCrypto::Utils {
          */
         std::vector<double> getFrequencyCharInVector(const std::string& fileName);
 
+		/**
+		 * @brief This function takes two parameters.
+		 *
+		 * @param bytesString  The hex string to analyze. The function attempts to
+		 *                     recover the original English text by XOR-ing it with
+		 *                     all possible characters and evaluating the results.
+		 *
+		 * @param resultString The output string that will contain the most likely
+		 *                     English plaintext.
+		 */
+		uint8_t getFixedXorFromBytesString(const std::string& bytesString,
+								  		std::string& resultString,
+								  		double& bestScore );
+
+		/**
+		 * @brief This function takes two parameters.
+		 *
+		 * @param bytes 		The hex string to analyze. The function attempts to
+		 *                  	recover the original English text by XOR-ing it with
+		 *                  	all possible characters and evaluating the results.
+		 *
+		 * @param resultString 	The output string that will contain the most likely
+		 *                     	English plaintext.
+		 */
+		uint8_t getFixedXorFromBytes(const std::vector<uint8_t>& bytes,
+								  	 const std::string& englishScorePath,
+								  		std::string& resultString,
+								  		double& bestScore );
+ 
+		 /**
+		 * @brief This function takes two parameters.
+		 *
+		 * @param bytes 		The hex string to analyze. The function attempts to
+		 *                  	recover the original English text by XOR-ing it with
+		 *                  	all possible characters and evaluating the results.
+		 *
+		 * @param resultString 	The output string that will contain the most likely
+		 *                     	English plaintext.
+		 */
+		uint8_t getFixedXorFromBytes(const std::vector<uint8_t>& bytes,
+								  	 std::string& resultString,
+							   		 const std::string& englishScorePath="./assets/englishSample.txt");
+
 
         /**
          * @brief Loads the entire contents of a file into a string.

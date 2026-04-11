@@ -5,12 +5,13 @@
 #include <iostream>
 #include <vector>
 #include <format>
+#include "StringConverter.h"
+#include "xor.h"
 
 namespace CCrypto::Utils{ 
 
 
 /**==============================================================================================**/
-
 
 std::string loadTextFromFile(const std::string& fileName) {
 
@@ -88,6 +89,85 @@ double englishScore(const std::string& text, const std::vector<double>& frequenc
     }
 
     return score / textLength;
+}
+
+/**==============================================================================================**/
+
+uint8_t getFixedXorFromBytesString(const std::string& bytesString, std::string& resultString, double& bestScore ) {
+  
+  // getting frequency char
+  std::vector<double> freqVector = Utils::getFrequencyCharInVector("./assets/englishSample.txt");
+
+  // convert baseTest in string
+  std::vector<uint8_t> text = StringConverter::hexStringToBytes(bytesString);
+
+
+  // Init the results
+  uint8_t bestChar = 0x00;
+  bestScore = -5000000;
+
+  for(uint16_t i = 0; i < 256; i++ ){
+
+    uint8_t key = (uint8_t)i;
+
+    // xor against char
+    std::vector<uint8_t> xoredVector = Xor::fixedXor(text, key);
+
+    std::string xoredString = StringConverter::bytesToString(xoredVector);
+
+    double newScore = Utils::englishScore(xoredString, freqVector);
+    //std::cout << (unsigned int)i << ": " << newScore << std::endl;
+
+    if( newScore >= bestScore ) {
+      bestChar = (char)i;
+      bestScore = newScore;
+    }
+  }
+
+  // std::cout << "Best bytes: " << bestChar << std::endl;
+  resultString = StringConverter::bytesToString(Xor::fixedXor(text, bestChar));
+
+  return (uint8_t)bestChar;
+
+}
+
+/**==============================================================================================**/
+
+uint8_t getFixedXorFromBytes(const 	std::vector<uint8_t>& bytes,
+								std::string& resultString,
+						  		const 	std::string& englishScorePath)
+{
+	// getting frequency char
+	std::vector<double> freqVector = Utils::getFrequencyCharInVector(englishScorePath);
+
+	 // Init the results
+  	uint8_t bestChar = 0x00;
+	double bestScore = -5000000;
+
+
+
+  	for(uint16_t i = 0; i < 256; i++ ){
+
+		uint8_t key = (uint8_t)i;
+
+		// xor against char
+		std::vector<uint8_t> xoredVector = Xor::fixedXor(bytes, key);
+
+		std::string xoredString = StringConverter::bytesToString(xoredVector);
+
+		double newScore = Utils::englishScore(xoredString, freqVector);
+		//std::cout << (unsigned int)i << ": " << newScore << std::endl;
+
+		if( newScore >= bestScore ) {
+		  bestChar = (char)i;
+		  bestScore = newScore;
+		}
+	}
+
+	//StringConverter::bytesToString(Xor::fixedXor(text, bestChar));
+
+  return (uint8_t)bestChar;
+
 }
 
 /**==============================================================================================**/
