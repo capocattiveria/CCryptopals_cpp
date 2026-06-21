@@ -45,11 +45,11 @@ $(LIB):
 $(BIN_OUT):
 	@mkdir -p $@
 
-$(TARGET): $(MAIN_SRC) $(CHALLENGE_SOURCES) $(LIB) refresh_lsp | $(BIN_OUT)
+$(TARGET): $(MAIN_SRC) $(CHALLENGE_SOURCES) $(LIB) | $(BIN_OUT)
 	@echo "Building $@ (SET=$(SET) CHALLENGE=$(CHALLENGE))"
 	@$(CXX) $(CXXFLAGS) $(BUILD_DEF) -DSET=$(SET) -DCHALLENGE=$(CHALLENGE) \
 		$(MAIN_SRC) $(CHALLENGE_SOURCES) -o $@ \
-		-I$(INCLUDE_DIR) -I$(CHALLENGE_DIR) $(LIB)
+		-I$(INCLUDE_DIR) -I$(CHALLENGE_DIR) $(LIB) -lcrypto
 
 clean:
 	@$(MAKE) -C CCrypto clean
@@ -100,7 +100,7 @@ compile_commands: refresh_lsp
 	@bear -- $(MAKE) clean all
 
 refresh_lsp:
-	@rm compile_commands.json
+	@rm -f compile_commands.json
 	@echo "Refreshing LSP compile commands for SET=$(SET) CHALLENGE=$(CHALLENGE)..."
 	@bear --append -- $(CXX) $(CXXFLAGS) $(BUILD_DEF) -DSET=$(SET) -DCHALLENGE=$(CHALLENGE) \
 		$(MAIN_SRC) $(CHALLENGE_SOURCES)  CCrypto/src/*.cpp -fsyntax-only \
