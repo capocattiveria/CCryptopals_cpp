@@ -1,0 +1,35 @@
+services:
+  dev:
+    build:
+      context: .devcontainer
+      dockerfile: Dockerfile
+    image: cryptopals-dev
+    # Gira come utente host (uid/gid 1000, = utente "ubuntu" nell'immagine)
+    # cosi' i file creati dentro il container non risultano di root sull'host
+    # e git non segnala "dubious ownership" sul repo montato.
+    # Override quando serve root: docker compose run --rm --user root dev bash
+    user: "1000:1000"
+    working_dir: /app
+    environment:
+      - HOME=/home/ubuntu
+      - TERM=${TERM:-xterm-256color}
+    volumes:
+      - .:/app
+      # config di sviluppo dell'host (nvim in rw: aggiorna lazy-lock.json)
+      - ${HOME}/.config/nvim:/home/ubuntu/.config/nvim
+      - ${HOME}/.config/tmux:/home/ubuntu/.config/tmux:ro
+      - ${HOME}/.ssh:/home/ubuntu/.ssh:ro
+      # stato/plugin di neovim: volumi dedicati al container (parser treesitter
+      # e binari compilati per l'immagine, non condivisi con l'host)
+      - nvim-data:/home/ubuntu/.local/share/nvim
+      - nvim-state:/home/ubuntu/.local/state/nvim
+      - nvim-cache:/home/ubuntu/.cache/nvim
+    # Tiene il container vivo per `docker compose exec`
+    command: sleep infinity
+    stdin_open: true
+    tty: true
+
+volumes:
+  nvim-data:
+  nvim-state:
+  nvim-cache:
