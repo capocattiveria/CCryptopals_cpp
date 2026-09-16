@@ -55,7 +55,26 @@ vengono riscaricati agli avvii successivi.
 
 Toolchain gia' presente nell'immagine: `g++`, `gdb`, `make`, `bear`, `clangd`
 (LSP C/C++), `git`, `ripgrep`, `fd`, `unzip`, `curl`/`wget`, `node`/`npm`,
-`python3`, `go`.
+`python3`, `go`, `claude` (CLI di Claude Code), `wl-clipboard`/`xclip`
+(clipboard, vedi sotto).
+
+### Clipboard (copiare/incollare fuori dal container)
+
+Il container riusa il **socket Wayland dell'host** (`compose.yaml`:
+`WAYLAND_DISPLAY` + mount di `/run/user/1000/wayland-*`), quindi `wl-copy` e
+`wl-paste` scrivono/leggono la clipboard vera dell'host:
+
+- **neovim** rileva `wl-copy` da solo (nessuna config da toccare): `"+y` copia
+  nella clipboard dell'host, `"+p` incolla. Con `set clipboard=unnamedplus`
+  ogni yank ci finisce automaticamente.
+- **tmux** copy-mode usa gia' `wl-copy` (`~/.config/tmux/tmux.conf`): ora
+  funziona anche dentro il container.
+
+Serve una **sessione Wayland** sull'host. Su X11 (o senza display) togli da
+`compose.yaml` il mount del socket e le due variabili, e passa a OSC 52
+(`:lua vim.g.clipboard = 'osc52'` in neovim, terminale che supporta OSC 52).
+Verifica dentro il container con `:checkhealth provider` in neovim (sezione
+clipboard) o `wl-copy pippo && wl-paste`.
 
 LSP server per neovim gia' installati (in `PATH`):
 
@@ -63,8 +82,23 @@ LSP server per neovim gia' installati (in `PATH`):
 - `pyright` — Python (via `npm -g`, richiede `python3`, presente)
 - `gopls` — Go (compilato con la toolchain Go dell'immagine)
 
-La versione di Go e' fissata in `.devcontainer/Dockerfile` (`ARG GO_VERSION`);
-per cambiarla: `docker compose build --build-arg GO_VERSION=X.Y.Z`.
+Le versioni di Go e Node sono fissate in `.devcontainer/Dockerfile`
+(`ARG GO_VERSION`, `ARG NODE_VERSION`); per cambiarle:
+`docker compose build --build-arg GO_VERSION=X.Y.Z` (idem per `NODE_VERSION`).
+Node viene dal tarball ufficiale (non da apt): la CLI di Claude Code richiede
+Node >= 22, la `nodejs` di Ubuntu 24.04 e' la 18.
+
+### Claude Code
+
+`claude` e' gia' nel `PATH`. Il container ha una **config propria**,
+indipendente da quella di Claude sull'host: sta in `/home/ubuntu/.claude` sul
+volume dedicato `claude-config` (l'`~/.claude` dell'host **non** e' montato).
+L'autenticazione si fa una volta e sopravvive a `docker compose down && up`.
+
+```bash
+docker compose exec dev bash
+claude        # al primo avvio chiede il login (OAuth via browser)
+```
 
 ## Neovim: allineare la versione all'host
 
@@ -85,6 +119,8 @@ docker volume rm cryptopals_nvim-data cryptopals_nvim-state cryptopals_nvim-cach
 docker compose up -d
 ```
 
+Per rifare il login di Claude Code da zero: `docker volume rm cryptopals_claude-config`.
+
 ## Scelte in `compose.yaml`
 
 - **`.:/app`** — bind mount: editi i file dall'host, compili dentro il container.
@@ -101,6 +137,13 @@ docker compose up -d
   neovim vivono in volumi dedicati al container: i binari (parser treesitter,
   ecc.) sono compilati per l'immagine e non entrano in conflitto con quelli
   dell'host.
+- **volume `claude-config`** (`/home/ubuntu/.claude`) — login e config della CLI
+  di Claude Code: config propria del container, indipendente da quella dell'host
+  (`~/.claude` non e' montato), persistente tra i riavvii del container.
 - **`TERM`** — propagato dall'host per avere i colori giusti in tmux/nvim.
+- **socket Wayland + `WAYLAND_DISPLAY` / `XDG_RUNTIME_DIR`** — danno al
+  container accesso alla clipboard dell'host tramite `wl-copy`/`wl-paste`
+  (usati da neovim e dalla copy-mode di tmux). Vale solo con sessione Wayland
+  sull'host.
 - **`command: sleep infinity`** — tiene vivo il container per
   `docker compose exec`.

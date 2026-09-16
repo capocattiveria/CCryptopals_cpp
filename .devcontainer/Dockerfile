@@ -17,8 +17,8 @@ RUN apt-get update && apt-get install -y \
     ripgrep \
     fd-find \
     unzip \
-    nodejs \
-    npm \
+    wl-clipboard \
+    xclip \
     python3 \
     python3-venv \
     && ln -s "$(command -v fdfind)" /usr/local/bin/fd \
@@ -43,11 +43,29 @@ RUN curl -fsSL -o /tmp/go.tar.gz \
     && ln -s /opt/go/bin/gofmt /usr/local/bin/gofmt \
     && rm /tmp/go.tar.gz
 
-# LSP server usati dalla config di neovim:
-#   - pyright (Python)  -> via npm, installato in /usr
-#   - gopls   (Go)      -> compilato con la toolchain sopra, binario in /usr/local/bin
+# Node.js (dal tarball ufficiale, come neovim/go): Ubuntu 24.04 impacchetta la
+# 18, troppo vecchia per la CLI di Claude Code (richiede Node >= 22). Bump con
+# --build-arg NODE_VERSION=vX.Y.Z. Include npm e npx.
+ARG NODE_VERSION=v22.14.0
+RUN curl -fsSL -o /tmp/node.tar.gz \
+      "https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.gz" \
+    && tar -xzf /tmp/node.tar.gz -C /opt \
+    && mv "/opt/node-${NODE_VERSION}-linux-x64" /opt/node \
+    && ln -s /opt/node/bin/node /usr/local/bin/node \
+    && ln -s /opt/node/bin/npm /usr/local/bin/npm \
+    && ln -s /opt/node/bin/npx /usr/local/bin/npx \
+    && rm /tmp/node.tar.gz
+
+# Tool globali via npm (i binari finiscono in /opt/node/bin, non nel PATH di
+# default: li si collega in /usr/local/bin come per node/npm/npx):
+#   - pyright                    -> LSP Python usato dalla config di neovim
+#   - @anthropic-ai/claude-code  -> CLI di Claude Code (comando `claude`)
+# gopls: compilato con la toolchain Go sopra, binario in /usr/local/bin.
 # GOTOOLCHAIN=auto: se gopls@latest richiede un Go piu' recente lo scarica da solo.
-RUN npm install -g pyright \
+RUN npm install -g pyright @anthropic-ai/claude-code \
+    && ln -s /opt/node/bin/claude /usr/local/bin/claude \
+    && ln -s /opt/node/bin/pyright /usr/local/bin/pyright \
+    && ln -s /opt/node/bin/pyright-langserver /usr/local/bin/pyright-langserver \
     && GOBIN=/usr/local/bin GOPATH=/tmp/go GOCACHE=/tmp/go-build GOTOOLCHAIN=auto \
        go install golang.org/x/tools/gopls@latest \
     && rm -rf /tmp/go /tmp/go-build
@@ -61,6 +79,7 @@ RUN mkdir -p \
       /home/ubuntu/.local/share/nvim \
       /home/ubuntu/.local/state/nvim \
       /home/ubuntu/.cache/nvim \
+      /home/ubuntu/.claude \
     && chown -R ubuntu:ubuntu /home/ubuntu
 
 WORKDIR /app

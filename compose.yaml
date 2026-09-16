@@ -13,8 +13,16 @@ services:
     environment:
       - HOME=/home/ubuntu
       - TERM=${TERM:-xterm-256color}
+      # Clipboard di sistema: si riusa il socket Wayland dell'host, cosi'
+      # wl-copy/wl-paste (e quindi il registro "+" di neovim e la copy-mode di
+      # tmux) scrivono nella clipboard dell'host. Richiede una sessione Wayland
+      # sull'host; su X11/senza display il mount qui sotto va rimosso.
+      - WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-wayland-0}
+      - XDG_RUNTIME_DIR=/run/user/1000
     volumes:
       - .:/app
+      # socket Wayland dell'host per la clipboard (vedi WAYLAND_DISPLAY sopra)
+      - ${XDG_RUNTIME_DIR:-/run/user/1000}/${WAYLAND_DISPLAY:-wayland-0}:/run/user/1000/${WAYLAND_DISPLAY:-wayland-0}
       # config di sviluppo dell'host (nvim in rw: aggiorna lazy-lock.json)
       - ${HOME}/.config/nvim:/home/ubuntu/.config/nvim
       - ${HOME}/.config/tmux:/home/ubuntu/.config/tmux:ro
@@ -24,6 +32,10 @@ services:
       - nvim-data:/home/ubuntu/.local/share/nvim
       - nvim-state:/home/ubuntu/.local/state/nvim
       - nvim-cache:/home/ubuntu/.cache/nvim
+      # login e config della CLI di Claude Code: volume dedicato al container,
+      # indipendente dalla config di Claude sull'host (~/.claude NON e' montato).
+      # L'autenticazione sopravvive a `docker compose down && up`.
+      - claude-config:/home/ubuntu/.claude
     # Tiene il container vivo per `docker compose exec`
     command: sleep infinity
     stdin_open: true
@@ -33,3 +45,4 @@ volumes:
   nvim-data:
   nvim-state:
   nvim-cache:
+  claude-config:
