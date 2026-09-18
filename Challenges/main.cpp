@@ -18,7 +18,7 @@
 #include "set1/S01C07.h"
 #include "set1/S01C08.h"
 #elif SET == 2
-    #include "set2/c01.hpp"
+    #include "set2/S02C01.h"
 #endif
 
 #if SET==1
@@ -52,13 +52,8 @@ int main() {
 
 #if SET==2
 int main() {
-    #if SET == 1 && CHALLENGE == 1
-        s01c01();
-        //challenge::set1::c01();
-    #elif SET == 1 && CHALLENGE == 2
-        challenge::set1::c02();
-    #elif SET == 2 && CHALLENGE == 1
-        challenge::set2::c01();
+	#if CHALLENGE == 1
+		s02c01();
     #else
         std::cerr << "Challenge not defined\n";
         return 1;

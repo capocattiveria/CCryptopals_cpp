@@ -1,7 +1,7 @@
 BUILD ?= debug
 
-SET ?= 1
-CHALLENGE ?= 6
+SET ?= 2
+CHALLENGE ?= 1
 
 CHALLENGE_DIR := Challenges
 BIN_DIR := bin

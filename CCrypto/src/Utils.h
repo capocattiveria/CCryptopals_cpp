@@ -110,6 +110,13 @@ namespace CCrypto::Utils {
         */
         int hammingDist(const std::vector<uint8_t>& b0, const std::vector<uint8_t>& b1);
 
+		
+        /**
+         * @brief Pad a byte vector to a multiple of the block size using PKCS#7.
+         * @param b0 The vector to pad, modified in place.
+        */
+        void addPKCS7Padding(std::vector<uint8_t>& bytes, size_t blockSize);
+
 
 }
 

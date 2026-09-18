@@ -218,6 +218,21 @@ int hammingDist(const std::vector<uint8_t>& b0, const std::vector<uint8_t>& b1){
 }
 
 
+/**==============================================================================================**/
+void addPKCS7Padding( std::vector<uint8_t>& bytes, size_t blockSize )
+{
+	size_t len = bytes.size();
+
+	size_t remainder = len % blockSize;
+
+	size_t padLen = blockSize - remainder;
+
+	for( size_t i = 0; i < padLen; i++ ){
+		bytes.push_back( static_cast<uint8_t>(padLen) );
+	}
+}
+
+
 }// End namespace CCrypto::Utils
 
 
