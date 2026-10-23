@@ -28,14 +28,14 @@ Alternativa senza container persistente: `docker compose run --rm dev bash`.
 Progetto montato in `/app`.
 
 ```bash
-make clean        # consigliato la prima volta: rimuove artefatti buildati sull'host
-make run SET=1 CHALLENGE=6
+cmake --preset debug && cmake --build --preset debug
+./build/debug/cryptopals s01c06
 
 tmux              # legge ~/.config/tmux/tmux.conf
 nvim .            # legge ~/.config/nvim
 ```
 
-Toolchain nell'immagine: `g++`, `gdb`, `make`, `bear`, `clangd`, `git`,
+Toolchain nell'immagine: `g++`, `gdb`, `cmake`, `ninja`, `clangd`, `git`,
 `ripgrep`, `fd`, `node`/`npm`, `python3`, `go`, `claude` (CLI di Claude Code),
 `wl-clipboard`/`xclip`.
 

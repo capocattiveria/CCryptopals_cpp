@@ -23,12 +23,11 @@ The repo is organized as:
 ## Requirements
 
 - `g++` with C++23 support
-- `make`
+- `cmake` (>= 3.20) and `ninja`
 - `libssl-dev` (OpenSSL headers, the library links against `libcrypto`)
 
 ### Optional
 
-- `bear` — to (re)generate `compile_commands.json` for clangd/LSP support
 - Docker + Docker Compose — see [DEV.md](DEV.md) for a containerized dev
   environment (neovim + tmux + Claude Code CLI, no local toolchain required)
 
@@ -37,40 +36,21 @@ The repo is organized as:
 From the repo root:
 
 ```bash
-make
+cmake --preset debug && cmake --build --preset debug       # debug build
+cmake --preset release && cmake --build --preset release   # release build
 ```
 
-This builds `CCrypto` and, by default, Set 1 / Challenge 1 in debug mode.
-
-Pick a specific challenge and build type with variables:
+All challenges are built into a single binary, `build/<preset>/cryptopals`.
+Pick the challenge at runtime, from the repo root (assets are read from `./assets`):
 
 ```bash
-make SET=1 CHALLENGE=6              # debug build (default)
-make release SET=2 CHALLENGE=1      # release build
+./build/debug/cryptopals s01c06
+./build/debug/cryptopals          # lists available challenges
 ```
 
-The resulting binary is placed at:
-
-```
-bin/debug/cryptopalsS<SET>C<CHALLENGE>     # BUILD=debug (default)
-bin/release/cryptopalsS<SET>C<CHALLENGE>   # BUILD=release
-```
-
-Run it directly, e.g.:
-
-```bash
-make SET=1 CHALLENGE=6 && ./bin/debug/cryptopalsS1C6
-```
-
-## Other Makefile targets
-
-```bash
-make list              # list available challenge sets
-make clean             # remove build artifacts (challenges + CCrypto)
-make clean-all         # clean plus remove build/bin directories
-make compile_commands  # regenerate compile_commands.json with bear
-make help              # show all targets and variables
-```
+To add a challenge, include its header in `Challenges/main.cpp` and add a line
+to the `challenges` table. `compile_commands.json` is generated automatically
+in `build/<preset>/` (used by clangd via `.clangd`).
 
 ## Development environment
 

@@ -10,7 +10,7 @@
 
 //const std::string challenge_arg("s01c01");
 
-int s01c01();
+void s01c01();
 
 
 #endif

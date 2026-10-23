@@ -1,14 +1,7 @@
 #include <iostream>
-#include <vector>
-// #include <memory>
+#include <map>
+#include <string>
 
-#include "Utils.h"
-
-#include "StringConverter.h"
-
-// Include condizionali
-
-#if SET == 1
 #include "set1/S01C01.h"
 #include "set1/S01C02.h"
 #include "set1/S01C03.h"
@@ -17,48 +10,31 @@
 #include "set1/S01C06.h"
 #include "set1/S01C07.h"
 #include "set1/S01C08.h"
-#elif SET == 2
-    #include "set2/S02C01.h"
-#endif
+#include "set2/S02C01.h"
+#include "set2/S02C02.h"
 
-#if SET==1
-int main() {
-    #if CHALLENGE == 1
-        s01c01();
-        //challenge::set1::c01();
-    #elif CHALLENGE == 2
-        s01c02();
-    #elif CHALLENGE == 3
-        s01c03();
-    #elif CHALLENGE == 4
-        s01c04();
-    #elif CHALLENGE == 5
-        s01c05();
-    #elif CHALLENGE == 6
-        s01c06();
-    #elif CHALLENGE == 7
-        s01c07();
-    #elif CHALLENGE == 8
-        s01c08();
-    #else
-        std::cerr << "Challenge not defined\n";
+// Registro dei challenge: per aggiungerne uno basta includere l'header e
+// aggiungere una riga qui.
+static const std::map<std::string, void (*)()> challenges = {
+    {"s01c01", s01c01}, {"s01c02", s01c02}, {"s01c03", s01c03},
+    {"s01c04", s01c04}, {"s01c05", s01c05}, {"s01c06", s01c06},
+    {"s01c07", s01c07}, {"s01c08", s01c08},
+    {"s02c01", s02c01}, {"s02c02", s02c02},
+};
+
+int main(int argc, char** argv) {
+    if (argc != 2) {
+        std::cerr << "Usage: " << argv[0] << " <sNNcMM>\nAvailable:";
+        for (const auto& [name, fn] : challenges) std::cerr << ' ' << name;
+        std::cerr << '\n';
         return 1;
-    #endif
-    
+    }
+
+    auto it = challenges.find(argv[1]);
+    if (it == challenges.end()) {
+        std::cerr << "Challenge not defined: " << argv[1] << '\n';
+        return 1;
+    }
+    it->second();
     return 0;
 }
-#endif
-
-
-#if SET==2
-int main() {
-	#if CHALLENGE == 1
-		s02c01();
-    #else
-        std::cerr << "Challenge not defined\n";
-        return 1;
-    #endif
-    
-    return 0;
-}
-#endif

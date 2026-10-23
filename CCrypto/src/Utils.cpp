@@ -219,6 +219,7 @@ int hammingDist(const std::vector<uint8_t>& b0, const std::vector<uint8_t>& b1){
 
 
 /**==============================================================================================**/
+// Used for S02C01
 void addPKCS7Padding( std::vector<uint8_t>& bytes, size_t blockSize )
 {
 	size_t len = bytes.size();
