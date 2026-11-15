@@ -59,6 +59,25 @@ std::vector<uint8_t> repeatingKeyXor(const std::vector<uint8_t>& bytes, const st
 }
 
 
+std::vector<uint8_t> bytesXorBytes(const std::vector<uint8_t>& lbytes, const std::vector<uint8_t>& rbytes)
+{
+    std::vector<uint8_t> result;
+
+	if(lbytes.size() != rbytes.size())
+	{
+		throw std::invalid_argument("The bytes have different length");
+	}
+
+	for (size_t i = 0; i < lbytes.size(); i++)
+	{
+        result.push_back(lbytes[i] ^ rbytes[i]);
+	}
+
+    return result;
+}
+
+
+
 }
 
 

@@ -19,6 +19,11 @@ namespace CCrypto::Xor {
     */
     std::vector<uint8_t> repeatingKeyXor(const std::vector<uint8_t>& bytes, const std::string& string2Xor );
 
+	/*
+	* @brief Sequentially xor lbytes[i] with rbyte[i]
+	*/
+    std::vector<uint8_t> bytesXorBytes(const std::vector<uint8_t>& lbytes, const std::vector<uint8_t>& rbytes);
+
 
 }
 

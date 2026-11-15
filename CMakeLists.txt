@@ -20,6 +20,7 @@ add_library(CCrypto STATIC
     CCrypto/src/StringConverter.cpp
     CCrypto/src/Utils.cpp
     CCrypto/src/xor.cpp
+	CCrypto/src/SslWrapper.cpp
 )
 # Header directory. PUBLIC: applies to the library and to whoever links it,
 # so the executable can #include "Utils.h" without extra options

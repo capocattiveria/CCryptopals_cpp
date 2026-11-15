@@ -10,8 +10,8 @@
 #include "set1/S01C06.h"
 #include "set1/S01C07.h"
 #include "set1/S01C08.h"
-#include "set2/S02C01.h"
-#include "set2/S02C02.h"
+#include "set2/S02C09.h"
+#include "set2/S02C10.h"
 
 // Registro dei challenge: per aggiungerne uno basta includere l'header e
 // aggiungere una riga qui.
@@ -19,7 +19,7 @@ static const std::map<std::string, void (*)()> challenges = {
     {"s01c01", s01c01}, {"s01c02", s01c02}, {"s01c03", s01c03},
     {"s01c04", s01c04}, {"s01c05", s01c05}, {"s01c06", s01c06},
     {"s01c07", s01c07}, {"s01c08", s01c08},
-    {"s02c01", s02c01}, {"s02c02", s02c02}, //{"s02c03",s02c03}
+    {"s02c09", s02c09}, {"s02c10", s02c10} //{"s02c03",s02c03}
 };
 
 int main(int argc, char** argv) {
