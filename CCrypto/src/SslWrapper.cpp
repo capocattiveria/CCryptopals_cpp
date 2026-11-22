@@ -5,6 +5,7 @@
 #include <string>
 
 #include <openssl/err.h>
+#include <openssl/rand.h>
 
 namespace CCrypto::SslWrapper{
 
@@ -64,9 +65,50 @@ std::vector<uint8_t> aes128ECB( const std::vector<uint8_t>& input,
 	return out;
 }
 
+// dst[i] ^= src[i] for one block, dst starts at dstOffset, src at srcOffset
+void xorBlock( std::vector<uint8_t>& dst, size_t dstOffset,
+			   const std::vector<uint8_t>& src, size_t srcOffset )
+{
+	for(size_t i = 0; i < AES_BLOCK; ++i)
+		dst[dstOffset + i] ^= src[srcOffset + i];
+}
+
+void checkKeyAndIv( const std::vector<uint8_t>& key, const std::vector<uint8_t>& iv )
+{
+	if(key.size() != AES_BLOCK)
+		throw std::invalid_argument("AES-128 wants a key of 16 bytes");
+	if(iv.size() != AES_BLOCK)
+		throw std::invalid_argument("CBC wants an IV of 16 bytes");
+}
+
+void addPkcs7( std::vector<uint8_t>& data )
+{
+	const size_t padLen = AES_BLOCK - (data.size() % AES_BLOCK); // 1..16, a full block if already aligned
+	data.insert(data.end(), padLen, static_cast<uint8_t>(padLen));
+}
+
+void removePkcs7( std::vector<uint8_t>& data )
+{
+	if(data.empty())
+		throw std::runtime_error("Invalid PKCS#7 padding: empty data");
+
+	const uint8_t n = data.back();
+	if(n == 0 || n > AES_BLOCK || n > data.size())
+		throw std::runtime_error("Invalid PKCS#7 padding");
+
+	for(size_t i = data.size() - n; i < data.size(); ++i)
+		if(data[i] != n)
+			throw std::runtime_error("Invalid PKCS#7 padding");
+
+	data.resize(data.size() - n);
+}
+
 } // end anonymous namespace
 
 
+/*************************************************************************************************
+ * ECB  encrypt and decrypt
+*************************************************************************************************/
 std::vector<uint8_t> aes128EncryptECB( const std::vector<uint8_t>& plaintext,
 									   const std::vector<uint8_t>& key,
 									   bool padding )
@@ -81,5 +123,85 @@ std::vector<uint8_t> aes128DecryptECB( const std::vector<uint8_t>& ciphertext,
 {
 	return aes128ECB(ciphertext, key, padding, false);
 }
+
+
+/*************************************************************************************************
+ * CBC  encrypt and decrypt using the ecb encrypting mode
+*************************************************************************************************/
+
+std::vector<uint8_t> aes128EncryptCBC( const std::vector<uint8_t>& plaintext,
+									   const std::vector<uint8_t>& key ,
+									   const std::vector<uint8_t>& iv ,
+									   bool padding
+									 )
+{
+	checkKeyAndIv(key, iv);
+
+	std::vector<uint8_t> data = plaintext;
+	if(padding)
+		addPkcs7(data);
+	else if(data.size() % AES_BLOCK != 0)
+		throw std::invalid_argument("Input must be a multiple of 16 bytes");
+
+	// C_i = E(P_i xor C_(i-1)), with C_0 = IV. Inherently sequential.
+	std::vector<uint8_t> out;
+	out.reserve(data.size());
+	std::vector<uint8_t> prev = iv;
+
+	for(size_t off = 0; off < data.size(); off += AES_BLOCK)
+	{
+		std::vector<uint8_t> block(data.begin() + off, data.begin() + off + AES_BLOCK);
+		xorBlock(block, 0, prev, 0);
+		prev = aes128ECB(block, key, false, true);
+		out.insert(out.end(), prev.begin(), prev.end());
+	}
+	return out;
+}
+
+std::vector<uint8_t> aes128DecryptCBC( const std::vector<uint8_t>& ciphertext,
+									   const std::vector<uint8_t>& key ,
+									   const std::vector<uint8_t>& iv ,
+									   bool padding
+									 )
+{
+	checkKeyAndIv(key, iv);
+
+	if(ciphertext.size() % AES_BLOCK != 0)
+		throw std::invalid_argument("Ciphertext must be a multiple of 16 bytes");
+
+	// P_i = D(C_i) xor C_(i-1), with C_0 = IV.
+	// Unlike encryption, every D(C_i) is independent: decrypt everything in one ECB call, then xor.
+	std::vector<uint8_t> out = aes128ECB(ciphertext, key, false, false);
+
+	for(size_t off = 0; off < out.size(); off += AES_BLOCK)
+	{
+		if(off == 0)
+			xorBlock(out, 0, iv, 0);
+		else
+			xorBlock(out, off, ciphertext, off - AES_BLOCK);
+	}
+
+	if(padding)
+		removePkcs7(out);
+	return out;
+}
+
+
+
+std::vector<uint8_t> randomBytes(size_t n)
+{
+	if(n > static_cast<size_t>(INT_MAX))
+		throw std::invalid_argument("Too many random bytes requested");
+
+	std::vector<uint8_t> out(n);
+	if(n == 0)
+		return out;
+
+	if(RAND_bytes(out.data(), static_cast<int>(n)) != 1)
+		throw opensslError("RAND_bytes failed");
+	return out;
+}
+
+
 
 }// end CCrypto::SslWrapper

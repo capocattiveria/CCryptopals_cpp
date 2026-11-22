@@ -7,6 +7,7 @@
 #include <format>
 #include "StringConverter.h"
 #include "xor.h"
+#include <unordered_set>
 
 namespace CCrypto::Utils{ 
 
@@ -233,6 +234,22 @@ void addPKCS7Padding( std::vector<uint8_t>& bytes, size_t blockSize )
 	}
 }
 
+
+/**==============================================================================================**/
+size_t countDuplicateBlocks(const std::vector<unsigned char>& bytes)
+{
+	constexpr size_t blockSize = 16;
+	std::unordered_set<std::string> seenBlocks;
+	size_t duplicates = 0;
+
+	for (size_t i = 0; i + blockSize <= bytes.size(); i += blockSize) {
+		std::string block(bytes.begin() + i, bytes.begin() + i + blockSize);
+		if (!seenBlocks.insert(block).second)
+			++duplicates;
+	}
+	return duplicates;
+
+}
 
 }// End namespace CCrypto::Utils
 

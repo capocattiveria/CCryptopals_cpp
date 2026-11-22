@@ -118,6 +118,9 @@ namespace CCrypto::Utils {
         void addPKCS7Padding(std::vector<uint8_t>& bytes, size_t blockSize);
 
 
+		size_t countDuplicateBlocks(const std::vector<unsigned char>& bytes);
+		
+
 }
 
 
